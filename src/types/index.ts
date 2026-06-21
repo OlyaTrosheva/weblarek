@@ -6,7 +6,7 @@ export interface IApi {
 }
 
 // Наши добавленные типы для проекта 
-export type TPayment = 'card' | 'cash' | '';
+export type TPayment = 'card' | 'cash';
 // Товар
 export interface IProduct {
   id: string;
@@ -18,18 +18,13 @@ export interface IProduct {
 } 
 // Покупатель
 export interface IBuyer {
-  payment: TPayment;
+  payment: TPayment | null;
   email: string;
   phone: string;
   address: string;
 }
 
-export type TFormErrors = {
-    payment?: string;
-    email?: string;
-    phone?: string;
-    address?: string;
-};
+export type TBuyerErrors = Partial<Record<keyof IBuyer, string>>;
 
 export interface IOrderPost extends IBuyer {
     total: number;

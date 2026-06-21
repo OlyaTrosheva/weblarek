@@ -28,10 +28,12 @@ if (firstProduct) {
     console.log('Получение стоимости всех товаров in корзине: ', basketModel.getTotal());
     console.log('Получение массива товаров, которые находятся в корзине: ', basketModel.getItems());
     basketModel.clear();
+
+    console.log('Получение массива товаров после очистки корзины: ', basketModel.getItems());
 }
 
 const buyerModel = new BuyerModel();
-console.log('Валидация данных (пустая форма): ', buyerModel.validate());
+console.log('Валидация данных (пустые данные): ', buyerModel.validate());
 buyerModel.setField('address', 'ул. Ленина, д. 42');
 buyerModel.setField('payment', 'card');
 console.log('Получение всех данных покупателя (частично заполнено): ', buyerModel.getBuyerData());
