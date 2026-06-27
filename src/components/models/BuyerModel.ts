@@ -1,14 +1,20 @@
 import { IBuyer, TPayment, TBuyerErrors } from '../../types';
+import { IEvents } from '../base/events';
 
 export class BuyerModel implements IBuyer {
     payment: TPayment | null = null;
     address: string = '';
     phone: string = '';
     email: string = '';
+    private events: IEvents;
+
+    constructor(events: IEvents) {
+        this.events = events;
+    }
 
     setField(field: keyof IBuyer, value: string): void {
         if (field === 'payment') {
-            this.payment = (value || null) as TPayment;
+            this.payment = (value || null) as TPayment | null;
         } else if (field === 'address') {
             this.address = value;
         } else if (field === 'phone') {
@@ -16,6 +22,7 @@ export class BuyerModel implements IBuyer {
         } else if (field === 'email') {
             this.email = value;
         }
+        this.events.emit('buyer:changed', this.validate());
     }
 
     getBuyerData(): IBuyer {
@@ -38,7 +45,7 @@ export class BuyerModel implements IBuyer {
         const errors: TBuyerErrors = {};
         if (this.payment === null) errors.payment = 'Не выбран вид оплаты';
         if (!this.address.trim()) errors.address = 'Укажите адрес доставки';
-        if (!this.email.trim()) errors.email = 'Укажите емэйл';
+        if (!this.email.trim()) errors.email = 'Укажите email';
         if (!this.phone.trim()) errors.phone = 'Укажите номер телефона';
         return errors;
     }
