@@ -1,5 +1,6 @@
 import { Component } from '../base/Component';
 import { IEvents } from '../base/events';
+import { ensureElement } from '../../utils/utils';
 
 interface IPage {
     counter: number;
@@ -16,10 +17,10 @@ export class Page extends Component<IPage> {
     constructor(container: HTMLElement, events: IEvents) {
         super(container);
 
-        this._counter = this.ensureElement<HTMLElement>('.header__basket-counter');
-        this._catalog = this.ensureElement<HTMLElement>('.gallery');
-        this._wrapper = this.ensureElement<HTMLElement>('.page__wrapper');
-        this._basket = this.ensureElement<HTMLElement>('.header__basket');
+        this._counter = ensureElement<HTMLElement>('.header__basket-counter', container);
+        this._catalog = ensureElement<HTMLElement>('.gallery', container);
+        this._wrapper = ensureElement<HTMLElement>('.page__wrapper', container);
+        this._basket = ensureElement<HTMLElement>('.header__basket', container);
 
         this._basket.addEventListener('click', () => {
             events.emit('basket:open');
@@ -27,7 +28,7 @@ export class Page extends Component<IPage> {
     }
 
     set counter(value: number) {
-        this.setText(this._counter, String(value));
+        this._counter.textContent = String(value);
     }
 
     set catalog(items: HTMLElement[]) {
@@ -45,3 +46,4 @@ export class Page extends Component<IPage> {
         return this.container;
     }
 }
+

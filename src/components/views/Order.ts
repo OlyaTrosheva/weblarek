@@ -1,6 +1,8 @@
 import { Form } from './Form';
 import { IEvents } from '../base/events';
 import { TPayment } from '../../types';
+import { ensureElement } from '../../utils/utils';
+
 
 interface IOrderForm {
     address: string;
@@ -14,8 +16,9 @@ export class Order extends Form<IOrderForm> {
     constructor(container: HTMLFormElement, events: IEvents) {
         super(container, events);
 
-        this._cardButton = this.ensureElement<HTMLButtonElement>('button[name=card]', container);
-        this._cashButton = this.ensureElement<HTMLButtonElement>('button[name=cash]', container);
+        this._cardButton = ensureElement<HTMLButtonElement>('button[name=card]', container);
+        this._cashButton = ensureElement<HTMLButtonElement>('button[name=cash]', container);
+
 
         this._cardButton.addEventListener('click', () => {
             this.onInputChange('payment', 'card');

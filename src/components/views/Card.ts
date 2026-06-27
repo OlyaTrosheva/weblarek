@@ -1,6 +1,7 @@
 import { Component } from '../base/Component';
 import { IProduct } from '../../types';
 import { categoryMap } from '../../utils/constants';
+import { ensureElement } from '../../utils/utils';
 
 interface ICardActions {
     onClick: (event: MouseEvent) => void;
@@ -23,8 +24,8 @@ export class Card extends Component<ICard> {
     constructor(container: HTMLElement, actions?: ICardActions) {
         super(container);
 
-        this._title = this.ensureElement<HTMLElement>('.card__title');
-        this._price = this.ensureElement<HTMLElement>('.card__price');
+        this._title = ensureElement<HTMLElement>('.card__title', container);
+        this._price = ensureElement<HTMLElement>('.card__price', container);
         this._image = container.querySelector('.card__image') as HTMLImageElement || undefined;
         this._category = container.querySelector('.card__category') || undefined;
         this._text = container.querySelector('.card__text') || undefined;
@@ -45,50 +46,51 @@ export class Card extends Component<ICard> {
     }
 
     set title(value: string) {
-        this.setText(this._title, value);
+        this._title.textContent = value;
     }
 
     set image(value: string) {
         if (this._image) {
-            this.setImage(this._image, value, this.title);
+            this._image.src = value;
+            this._image.alt = this._title.textContent || '';
         }
     }
 
     set category(value: string) {
         if (this._category) {
-            this.setText(this._category, value);
-            const mappedClass = categoryMap[value] || 'other';
-            this._category.className = `card__category card__category_${mappedClass}`;
+            this._category.textContent = value;
+            const mappedClass = categoryMap[value as keyof typeof categoryMap] || 'card__category_other';
+            this._category.className = `card__category ${mappedClass}`;
         }
     }
 
     set price(value: number | null) {
         if (value === null) {
-            this.setText(this._price, 'Бесценно');
+            this._price.textContent = 'Бесценно';
             if (this._button) {
-                this.setDisabled(this._button, true);
-                this.setText(this._button, 'Недоступно');
+                this._button.disabled = true;
+                this._button.textContent = 'Недоступно';
             }
         } else {
-            this.setText(this._price, `${value} синапсов`);
+            this._price.textContent = `${value} синапсов`;
         }
     }
 
     set text(value: string) {
         if (this._text) {
-            this.setText(this._text, value);
+            this._text.textContent = value;
         }
     }
 
     set buttonText(value: string) {
         if (this._button && this._button.textContent !== 'Недоступно') {
-            this.setText(this._button, value);
+            this._button.textContent = value;
         }
     }
 
     set index(value: number) {
         if (this._index) {
-            this.setText(this._index, String(value));
+            this._index.textContent = String(value);
         }
     }
 
@@ -99,3 +101,4 @@ export class Card extends Component<ICard> {
         return this.container;
     }
 }
+

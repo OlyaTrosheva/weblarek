@@ -22,6 +22,7 @@ export class BuyerModel implements IBuyer {
         } else if (field === 'email') {
             this.email = value;
         }
+        // Передаем в событие результаты валидации
         this.events.emit('buyer:changed', this.validate());
     }
 
@@ -43,10 +44,18 @@ export class BuyerModel implements IBuyer {
 
     validate(): TBuyerErrors {
         const errors: TBuyerErrors = {};
+        
+        // Если мы на первом шаге (вводим адрес или выбираем оплату)
         if (this.payment === null) errors.payment = 'Не выбран вид оплаты';
         if (!this.address.trim()) errors.address = 'Укажите адрес доставки';
-        if (!this.email.trim()) errors.email = 'Укажите email';
-        if (!this.phone.trim()) errors.phone = 'Укажите номер телефона';
+        
+        // Если первый шаг уже пройден успешно, проверяем второй шаг
+        if (this.payment !== null && this.address.trim().length > 0) {
+            if (!this.email.trim()) errors.email = 'Укажите email';
+            if (!this.phone.trim()) errors.phone = 'Укажите номер телефона';
+        }
+        
         return errors;
     }
 }
+

@@ -1,5 +1,6 @@
 import { Component } from '../base/Component';
 import { IEvents } from '../base/events';
+import { ensureElement } from '../../utils/utils';
 
 interface IBasketView {
     items: HTMLElement[];
@@ -14,9 +15,9 @@ export class Basket extends Component<IBasketView> {
     constructor(container: HTMLElement, events: IEvents) {
         super(container);
 
-        this._list = this.ensureElement<HTMLElement>('.basket__list', container);
-        this._total = this.ensureElement<HTMLElement>('.basket__price', container);
-        this._button = this.ensureElement<HTMLButtonElement>('.basket__button', container);
+        this._list = ensureElement<HTMLElement>('.basket__list', container);
+        this._total = ensureElement<HTMLElement>('.basket__price', container);
+        this._button = ensureElement<HTMLButtonElement>('.basket__button', container);
 
         if (this._button) {
             this._button.addEventListener('click', () => {
@@ -28,17 +29,17 @@ export class Basket extends Component<IBasketView> {
     set items(items: HTMLElement[]) {
         if (items.length > 0) {
             this._list.replaceChildren(...items);
-            this.setDisabled(this._button, false);
+            this._button.disabled = false;
         } else {
             const emptyText = document.createElement('p');
             emptyText.textContent = 'Корзина пуста';
             this._list.replaceChildren(emptyText);
-            this.setDisabled(this._button, true);
+            this._button.disabled = true;
         }
     }
 
     set total(total: number) {
-        this.setText(this._total, `${total} синапсов`);
+        this._total.textContent = `${total} синапсов`;
     }
 
     render(data?: Partial<IBasketView>): HTMLElement {
