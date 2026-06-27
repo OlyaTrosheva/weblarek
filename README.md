@@ -261,7 +261,7 @@ Presenter - презентер содержит основную логику п
 *   **Методы**:
     *   `protected onInputChange(field: keyof T, value: string): void` — генерирует событие изменения конкретного поля ввода для Презентера.
     *   `set valid(value: boolean)` — управляет доступностью кнопки отправки (`disabled`).
-    *   `set errors(value: string)` — выводит текст ошибок под формой.
+    *   `set errors(value: string | string[])` — выводит текст ошибок под формой.
     *   `render(data?: Partial<IFormState> & T): HTMLElement` — обновляет состояние валидации, ошибок, заполняет инпуты и возвращает форму.
 
 ### 6. Форма заказа (`Order`)
