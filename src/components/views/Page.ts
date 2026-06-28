@@ -4,22 +4,17 @@ import { ensureElement } from '../../utils/utils';
 
 interface IPage {
     counter: number;
-    catalog: HTMLElement[];
     locked: boolean;
 }
 
 export class Page extends Component<IPage> {
     protected _counter: HTMLElement;
-    protected _catalog: HTMLElement;
-    protected _wrapper: HTMLElement;
     protected _basket: HTMLElement;
 
     constructor(container: HTMLElement, events: IEvents) {
         super(container);
 
         this._counter = ensureElement<HTMLElement>('.header__basket-counter', container);
-        this._catalog = ensureElement<HTMLElement>('.gallery', container);
-        this._wrapper = ensureElement<HTMLElement>('.page__wrapper', container);
         this._basket = ensureElement<HTMLElement>('.header__basket', container);
 
         this._basket.addEventListener('click', () => {
@@ -31,19 +26,12 @@ export class Page extends Component<IPage> {
         this._counter.textContent = String(value);
     }
 
-    set catalog(items: HTMLElement[]) {
-        this._catalog.replaceChildren(...items);
-    }
-
     set locked(value: boolean) {
-        this._wrapper.classList.toggle('page__wrapper_locked', value);
-    }
-
-    render(data?: Partial<IPage>): HTMLElement {
-        if (data) {
-            Object.assign(this, data);
+        if (value) {
+            document.body.classList.add('page_locked');
+        } else {
+            document.body.classList.remove('page_locked');
         }
-        return this.container;
     }
 }
 

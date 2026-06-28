@@ -19,33 +19,18 @@ export class Basket extends Component<IBasketView> {
         this._total = ensureElement<HTMLElement>('.basket__price', container);
         this._button = ensureElement<HTMLButtonElement>('.basket__button', container);
 
-        if (this._button) {
-            this._button.addEventListener('click', () => {
-                events.emit('order:open');
-            });
-        }
+        this._button.addEventListener('click', () => {
+            events.emit('order:open');
+        });
     }
 
     set items(items: HTMLElement[]) {
-        if (items.length > 0) {
-            this._list.replaceChildren(...items);
-            this._button.disabled = false;
-        } else {
-            const emptyText = document.createElement('p');
-            emptyText.textContent = 'Корзина пуста';
-            this._list.replaceChildren(emptyText);
-            this._button.disabled = true;
-        }
+        this._list.replaceChildren(...items);
+        this._button.disabled = items.length === 0;
     }
 
     set total(total: number) {
         this._total.textContent = `${total} синапсов`;
     }
-
-    render(data?: Partial<IBasketView>): HTMLElement {
-        if (data) {
-            Object.assign(this, data);
-        }
-        return this.container;
-    }
 }
+

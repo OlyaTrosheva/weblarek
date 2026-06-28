@@ -4,7 +4,7 @@ import { ensureElement } from '../../utils/utils';
 
 interface IFormState {
     valid: boolean;
-    errors: string | string[]; 
+    errors: string;
 }
 
 export class Form<T> extends Component<IFormState> {
@@ -41,21 +41,8 @@ export class Form<T> extends Component<IFormState> {
         this._submit.disabled = !value;
     }
 
-    set errors(value: string | string[]) {
-        if (Array.isArray(value)) {
-            this._errors.textContent = value.join(', ');
-        } else {
-            this._errors.textContent = value;
-        }
-    }
-
-    render(data?: Partial<IFormState> & T): HTMLElement {
-        if (data) {
-            const { valid, errors, ...inputs } = data;
-            super.render({ valid, errors });
-            Object.assign(this, inputs);
-        }
-        return this.container;
+    set errors(value: string) {
+        this._errors.textContent = value;
     }
 }
 

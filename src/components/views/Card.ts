@@ -1,52 +1,69 @@
 import { Component } from '../base/Component';
+import { IEvents } from '../base/events';
 import { IProduct } from '../../types';
 import { categoryMap } from '../../utils/constants';
 import { ensureElement } from '../../utils/utils';
 
-interface ICardActions {
-    onClick: (event: MouseEvent) => void;
-}
-
 export interface ICard extends IProduct {
     buttonText?: string;
     index?: number;
+    buttonDisabled?: boolean;
+    text?: string;
 }
 
 export class Card extends Component<ICard> {
     protected _title: HTMLElement;
-    protected _image?: HTMLImageElement;
-    protected _category?: HTMLElement;
     protected _price: HTMLElement;
-    protected _text?: HTMLElement;
-    protected _button?: HTMLButtonElement;
-    protected _index?: HTMLElement;
+    public _image?: HTMLImageElement;
+    public _category?: HTMLElement;
+    public _text?: HTMLElement;
+    public _button?: HTMLButtonElement;
+    public _index?: HTMLElement;
 
-    constructor(container: HTMLElement, actions?: ICardActions) {
+    constructor(container: HTMLElement, events: IEvents) {
         super(container);
 
         this._title = ensureElement<HTMLElement>('.card__title', container);
         this._price = ensureElement<HTMLElement>('.card__price', container);
-        this._image = container.querySelector('.card__image') as HTMLImageElement || undefined;
-        this._category = container.querySelector('.card__category') || undefined;
-        this._text = container.querySelector('.card__text') || undefined;
-        this._button = container.querySelector('.card__button') || undefined;
-        this._index = container.querySelector('.basket__item-index') || undefined;
+        this._image = container.querySelector('.card__image') as HTMLImageElement;
+        this._category = container.querySelector('.card__category') as HTMLElement;
+        this._text = container.querySelector('.card__text') as HTMLElement;
+        this._button = container.querySelector('.card__button') as HTMLButtonElement;
+        this._index = container.querySelector('.basket__item-index') as HTMLElement;
 
-        if (actions?.onClick) {
-            if (this._button) {
-                this._button.addEventListener('click', actions.onClick);
-            } else {
-                container.addEventListener('click', actions.onClick);
-            }
+        const deleteButton = container.querySelector('.basket__item-delete');
+
+        if (this._button) {
+            this._button.addEventListener('click', (e) => {
+                e.stopPropagation();
+                events.emit('card:toggle-basket', { id: this.id });
+            });
+        } else if (deleteButton) {
+            deleteButton.addEventListener('click', (e) => {
+                e.stopPropagation();
+                events.emit('basket:delete', { id: this.id });
+            });
+        } else {
+            container.addEventListener('click', () => {
+                events.emit('card:select', { id: this.id });
+            });
         }
     }
 
     set id(value: string) {
-        this.container.dataset.id = value;
+        this.container.setAttribute('data-id', value);
+    }
+
+    get id(): string {
+        return this.container.getAttribute('data-id') || '';
     }
 
     set title(value: string) {
         this._title.textContent = value;
+    }
+
+    set price(value: number | null) {
+        this._price.textContent = value === null ? 'Бесценно' : `${value} синапсов`;
     }
 
     set image(value: string) {
@@ -64,18 +81,6 @@ export class Card extends Component<ICard> {
         }
     }
 
-    set price(value: number | null) {
-        if (value === null) {
-            this._price.textContent = 'Бесценно';
-            if (this._button) {
-                this._button.disabled = true;
-                this._button.textContent = 'Недоступно';
-            }
-        } else {
-            this._price.textContent = `${value} синапсов`;
-        }
-    }
-
     set text(value: string) {
         if (this._text) {
             this._text.textContent = value;
@@ -83,8 +88,14 @@ export class Card extends Component<ICard> {
     }
 
     set buttonText(value: string) {
-        if (this._button && this._button.textContent !== 'Недоступно') {
+        if (this._button) {
             this._button.textContent = value;
+        }
+    }
+
+    set buttonDisabled(value: boolean) {
+        if (this._button) {
+            this._button.disabled = value;
         }
     }
 
@@ -93,12 +104,7 @@ export class Card extends Component<ICard> {
             this._index.textContent = String(value);
         }
     }
-
-    render(data?: Partial<ICard>): HTMLElement {
-        if (data) {
-            Object.assign(this, data);
-        }
-        return this.container;
-    }
 }
+
+
 

@@ -23,9 +23,13 @@ export class CatalogModel {
         return this.items.find(item => item.id === id);
     }
 
-    setPreview(item: IProduct | null): void {
-        this.preview = item;
-        this.events.emit('preview:changed', item);
+    setPreview(id: string | null): void {
+        if (id === null) {
+            this.preview = null;
+        } else {
+            this.preview = this.getProduct(id) || null;
+        }
+        this.events.emit('preview:changed');
     }
 
     getPreview(): IProduct | null {

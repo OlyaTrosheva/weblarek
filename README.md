@@ -202,7 +202,8 @@ Presenter - презентер содержит основную логику п
 *   **Методы (Сеттеры)**:
     *   `set counter(value: number)` — устанавливает текстовое значение счетчика.
     *   `set catalog(items: HTMLElement[])` — заменяет содержимое галереи массивом готовых карточек.
-    *   `set locked(value: boolean)` — включает/выключает CSS-модификатор `page__wrapper_locked` для блокировки скролла.
+    *   `set locked(value: boolean)` — включает/выключает CSS-класс `page_locked` на элементе `body` для блокировки скролла всей страницы.
+
 *   **Метод `render`**: `render(data?: Partial<IPage>): HTMLElement` — принимает частичные данные страницы и возвращает её DOM-элемент.
 
 ### 2. Карточка товара (`Card`)

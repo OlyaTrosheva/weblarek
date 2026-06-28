@@ -12,10 +12,17 @@ export class Contacts extends Form<IContactsForm> {
     }
 
     set email(value: string) {
-        (this.container.elements.namedItem('email') as HTMLInputElement).value = value;
+        const emailInput = this.container.elements.namedItem('email') as HTMLInputElement;
+        if (emailInput) {
+            emailInput.value = value;
+        }
     }
 
     set phone(value: string) {
-        (this.container.elements.namedItem('phone') as HTMLInputElement).value = value;
+        const phoneInput = this.container.elements.namedItem('phone') as HTMLInputElement;
+        if (phoneInput) {
+            phoneInput.value = value;
+        }
     }
 }
+
